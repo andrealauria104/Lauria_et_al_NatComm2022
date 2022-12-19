@@ -1,8 +1,11 @@
 # DNMT3B supports meso-endoderm differentiation from mouse embryonic stem cells
 
-Code repository for the paper "DNMT3B supports meso-endoderm differentiation from mouse embryonic stem cells" 
+Code repository for the paper:
 
-## Abstract
+<cite>Andrea Lauria*, Guohua Meng*, Valentina Proserpio*, Stefania Rapelli*, Mara Maldotti,
+Isabelle Laurence Polignano, Francesca Anselmi, Chiara Levra Levron, Giacomo Donati,
+Danny Incarnato, Anna Krepelova, Francesco Neri, Ivan Molineris, Salvatore Oliviero, "Lack
+of DNMT3B in mouse epiblasts impairs meso-endoderm differentiation."</cite>
 
 ## Repository structure
 
