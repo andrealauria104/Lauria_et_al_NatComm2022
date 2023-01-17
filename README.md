@@ -64,9 +64,23 @@ where:
 
 ## Data availability
 
-Raw and processed sequencing data are available from the Gene Expression Omnibus (GEO) database under accession code GSEXXXX
+Raw and processed sequencing data are available from the Gene Expression Omnibus (GEO) database under accession code GSE168415[https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168415]
 
-## Additional sofware required for the analysis:
+## Used software
+
+- STAR 2.7.1a: https://github.com/alexdobin/STAR
+- HISAT2 v2.2.1: http://daehwankimlab.github.io/hisat2/ 
+- featureCounts v1.6.4: https://subread.sourceforge.net/ 
+- Seurat v4.0.0: https://satijalab.org/seurat/index.html
+- Monocle3 v1.0.0: https://cole-trapnell-lab.github.io/monocle3/
+- edgeR v3.32.1: https://bioconductor.org/packages/release/bioc/html/edgeR.html
+- Bismark v0.22.3: https://www.bioinformatics.babraham.ac.uk/projects/bismark/
+- Bowtie2 v2.3.5: https://bowtie-bio.sourceforge.net/bowtie2/index.shtml
+- MACS2 v2.2.5: https://pypi.org/project/MACS2/ 
+- DSS v2.34.0: https://bioconductor.org/packages/release/bioc/html/DSS.html
+- R v3.6.1, v4.0.3: https://www.r-project.org/
+
+## Additional sofware required for the analysis
 
 - `ngsRtools`: https://github.com/andrealauria104/ngsRtools
 - `epigeNGS-pipe`: https://github.com/andrealauria104/epigeNGS-pipe
