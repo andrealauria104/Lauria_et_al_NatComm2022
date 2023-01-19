@@ -174,3 +174,9 @@ dss%txt.gz: dss%txt
 
 dssDMR_%.dmr_info.txt.gz: dssDMR_%.bed dssDMR_%.ccREs_map.gz dssDMR_%_rGREAT/region_gene_map_default.gz dssDMR_%.hyper.names dssDMR_%.hypo.names
 	bin/collect-dmr-info.r dssDMR_$* 
+
+# ---- #
+DMR/dssDMR_WT-time-course_3BKOvsWT.mregion.ratio.heatmap.col_idx.pdf: src/get-dmr-heatmap_WT-time-course_3BKO-vs-WT.r
+	conda activate rstudio_Rv4.0.3; export LD_LIBRARY_PATH=/sto1/ref/miniconda2/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
+	Rscript --vanilla $<
+
