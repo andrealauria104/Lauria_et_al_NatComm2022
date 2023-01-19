@@ -21,4 +21,7 @@ results/mfa.pdf: results/r.mfa.rds
 results/methyl_expr_dynamics.heatmap.pdf: src/plot-methyl-expr-heatmap.r
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	Rscript --vanilla $<
+results/methyl_expr_dynamics.lines.trend.pdf: src/plot-methyl-expr-dynamics.r
+	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
+	Rscript --vanilla $<
 
