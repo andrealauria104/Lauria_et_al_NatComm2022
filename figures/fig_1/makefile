@@ -39,16 +39,11 @@ seurat/results_visualize-data/dimplot.umap.pdf: src/scrnaseq-visualize-data.r sr
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3;export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	OMP_NUM_THREADS=$(CORES) Rscript --vanilla $<	
 
-seurat/results_seurat-transfer/done: src/scrnaseq-seurat-transfer.r seurat/results_seurat-cluster/seurat_obj.rds
-	$(CONDA_ACTIVATE) rstudio_Rv4.0.3;export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
-	OMP_NUM_THREADS=$(CORES) Rscript --vanilla $<
-	touch $@
-
 seurat/results_seurat-cluster/da-fisher/comparisons.rds: src/scrnaseq-seurat-da-fisher.r seurat/results_seurat-cluster/seurat_obj.rds
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3;export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	OMP_NUM_THREADS=$(CORES) Rscript --vanilla $<
 	touch $@
-seurat/results_seurat-cluster/da-fisher/p_perc_table_lineage.pdf: src/scrnaseq-visualize_da-fisher.r seurat/results_seurat-cluster/da-fisher/comparisons.rds
+seurat/results_seurat-cluster/da-fisher/p_perc_table.pdf: src/scrnaseq-visualize_da-fisher.r seurat/results_seurat-cluster/da-fisher/comparisons.rds
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3;export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	OMP_NUM_THREADS=$(CORES) Rscript --vanilla $<
 
