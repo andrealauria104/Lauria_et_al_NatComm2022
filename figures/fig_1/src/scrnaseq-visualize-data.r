@@ -306,90 +306,10 @@ message(" -- saving to: ",outfile)
 pdf(file = outfile, paper = "a4r", w = unit(4.5, 'cm'), h = unit(3.5, 'cm'), useDingbats = F)
 print(pumap_trajectory_pseudotime_genotype)
 dev.off()
-# 2. Markers ----
-markers <- read.delim("seurat/results_seurat-cluster/seurat_clusters_markers.txt.gz")
-markers_reduction_n_top = 2
-top_n_genes <- lapply(split(markers, markers$cluster), function(x) head(x, n = markers_reduction_n_top))
-top_n_genes <- do.call(rbind.data.frame, top_n_genes)
 
-pdimred_markers <- list()
-for(reduction in reductions) {
-  pdimred_markers[[reduction]] <- FeaturePlot(seurat_obj, features = top_n_genes$gene, reduction = reduction, pt.size = .05, ncol = 5) &
-    theme_bw() + my_theme_2 + theme(panel.grid.major = element_blank(), legend.key.size = unit(4,'mm')) &
-    scale_colour_gradientn(colours = RColorBrewer::brewer.pal(n = 4, name = "Purples"))
-  
-  outfile <- paste0(path_results,"/seurat_clusters_markers.dimred_",reduction,".pdf")
-  message(" -- output file: ", outfile)
-  pdf(file = outfile, paper = "a4", useDingbats = F, w=unit(10,'cm'), height = unit(10,'cm'))
-  print(pdimred_markers[[reduction]])
-  dev.off()
-}
-
-# 3. Markers list ----
-markers_list <- read.delim("../../local/share/data/markers_list.txt.gz")
-markers_list <- split(markers_list, markers_list$filtered)
-
-pdimred_markers_list <- list()
-
-for(marker_x in names(markers_list)) {
-  pdimred_markers_list[[marker_x]] <- list()
-  for(reduction in reductions) {
-    pdimred_markers_list[[marker_x]][[reduction]] <- FeaturePlot(seurat_obj, features = markers_list[[marker_x]]$gene_name, reduction = reduction, pt.size = .05, ncol = 5) &
-      theme_bw() + my_theme_2 + theme(panel.grid.major = element_blank(), legend.key.size = unit(4,'mm')) 
-    # outfile <- paste0(path_results,"/seurat_clusters_markers.dimred_",reduction,".pdf")
-    # message(" -- output file: ", outfile)
-    # pdf(file = outfile, paper = "a4", useDingbats = F, w=unit(10,'cm'), height = unit(10,'cm'))
-    # print(pdimred_markers[[reduction]])
-    # dev.off()
-  }
-}
-
-pdimred_markers_list_x <- list()
-for(reduction in reductions) {
-  pdimred_markers_list_x[[reduction]] <- FeaturePlot(seurat_obj, features = top_n_genes$gene, reduction = reduction, pt.size = .05, ncol = 5) &
-    theme_bw() + my_theme_2 + theme(panel.grid.major = element_blank(), legend.key.size = unit(4,'mm')) &
-    scale_colour_gradientn(colours = RColorBrewer::brewer.pal(n = 4, name = "Purples"))
-  
-  # outfile <- paste0(path_results,"/seurat_clusters_markers.dimred_",reduction,".pdf")
-  # message(" -- output file: ", outfile)
-  # pdf(file = outfile, paper = "a4", useDingbats = F, w=unit(10,'cm'), height = unit(10,'cm'))
-  # print(pdimred_markers[[reduction]])
-  # dev.off()
-}
-
-markers_list_qpcr <- c("Nanog","Lefty1","Sox2"
-                       ,"T","Sox17","Sox1"
-                       ,"Vim","Mixl1","Gata4")
-
-markers_positive_plots <- list()
-n_reads <- 1
-reduction <- "umap"
-for(gene_x in markers_list_qpcr) {
-  seurat_obj[[paste0(gene_x,"_positive")]] <- seurat_obj@assays$RNA@counts[gene_x,]>=n_reads
-  feature <- paste0(gene_x,"_positive")
-  markers_positive_plots[[gene_x]] <- DimPlot(seurat_obj, reduction = reduction, group.by = feature, pt.size = .5, split.by = "TimeGenotype", ncol = 3) +
-    theme_bw() + my_theme_2 + theme(panel.grid.major = element_blank(), legend.key.size = unit(4,'mm'), aspect.ratio = 1) +
-    guides(shape=guide_legend(nrow=5)) + scale_color_manual(values=c("TRUE"="red","FALSE"="lightgrey")) +
-    xlab(paste0(gsub("PCA","PC",toupper(reduction))," 1")) + ylab(paste0(gsub("PCA","PC",toupper(reduction))," 2")) + ggtitle(paste0(gene_x," positive cells [ reads >= ",n_reads," ]")) 
-  outfile <- paste0(path_results,"/markers_list_qpcr.dimred_",reduction,".",gene_x,".pdf")
-  message(" -- output file: ", outfile)
-  pdf(file = outfile, paper = "a4", useDingbats = F, w=unit(10,'cm'), height = unit(10,'cm'))
-  print(markers_positive_plots[[gene_x]])
-  dev.off()
-}
-
-markers_quantitative_plots <- FeaturePlot(seurat_obj, features = markers_list_qpcr, reduction = reduction, pt.size = .05, ncol = 3) &
-  theme_bw() + my_theme_2 + theme(panel.grid.major = element_blank(), legend.key.size = unit(4,'mm'))
-
-outfile <- paste0(path_results,"/markers_list_qpcr.quantitative.dimred_",reduction,".pdf")
-message(" -- output file: ", outfile)
-pdf(file = outfile, paper = "a4", useDingbats = F, w=unit(10,'cm'), height = unit(10,'cm'))
-print(markers_quantitative_plots)
-dev.off()
-
-# 4. Markers violin ----
+# 3. Markers ----
 plot_genes_violin_wrapper <- function(seurat_obj, pal, genes
-                                      , assay="RNA" # integrated
+                                      , assay="RNA"
                                       , point_size=0.1
                                       , jitter_width=0.4
                                       , summary_point_size=1.5
@@ -418,21 +338,6 @@ plot_genes_violin_wrapper <- function(seurat_obj, pal, genes
           , axis.title = element_text(size=6)
           , strip.text = element_text(size=6))
   
-  # tmp <-VlnPlot(seurat_obj, features = genes
-  #               , cols = pal
-  #               , pt.size = .001
-  #               , combine = F) 
-  # tmp <- lapply(tmp, function(x) {
-  #   y <- x + stat_summary(fun = "median"
-  #                         ,geom = "point"
-  #                         ,color = "white"
-  #                         ,show.legend = F
-  #                         ,size=1) + 
-  #     theme_bw() + my_theme + guides(fill=FALSE)
-  #   y <- ggrastr::rasterise(y, dpi=600)
-  #   return(y)
-  # })
-  # p <- ggpubr::ggarrange(plotlist = tmp, nrow = 1, align = "hv", common.legend = T, legend = "bottom")
   return(p)
 }
 
