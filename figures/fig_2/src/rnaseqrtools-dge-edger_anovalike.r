@@ -21,7 +21,7 @@ suppressWarnings(suppressMessages(library(RNAseqRtools)))
 
 # paths ---
 path_dgelist_obj <- "data/dgelist_obj.rds" # ASSIGN_PATH_DGELIST_OBJ
-path_results <- "results/dge-edger" # ASSIGN_PATH_RESULTS
+path_results <- "results/dge-edger_anovalike" # ASSIGN_PATH_RESULTS
 
 if(!dir.exists(path_results)) dir.create(path_results, recursive = T)
 
@@ -29,25 +29,24 @@ if(!dir.exists(path_results)) dir.create(path_results, recursive = T)
 de_method = "qlf" # qlf, lrt, exact
 de_robust.dispersion = TRUE
 de_return.y = FALSE
-de_formula = "~0+StageGenotype"
-de_cf = NULL
-de_contrast  = list("ESC_3BKO_vs_WT"=c("StageGenotype","ESC_3BKO","ESC_WT")
-                    ,"EpiLC_3BKO_vs_WT"=c("StageGenotype","EpiLC_3BKO","EpiLC_WT")
-                    ,"ME24h_3BKO_vs_WT"=c("StageGenotype","ME24h_3BKO","ME24h_WT")
-                    ,"ME48h_3BKO_vs_WT"=c("StageGenotype","ME48h_3BKO","ME48h_WT"))
+de_formula = "~Genotype*Stage" # de_formula = "~time"
+de_cf = list("timecourse_anovalike"=c(2:8))
+de_contrast  = NULL
+de_anovalike = TRUE
+de_analysis  = "timecourse_anovalike" # dge
 
-de_anovalike = FALSE
-de_analysis  = "timecourse_contrasts" # dge
-
-fdrTh  = 0.05
-fcTh   = 1
+fdrTh  = 0.001
+fcTh   = 1.5
 save_table = TRUE
-save_excel = FALSE
-
-# read object ---
-dgelist_obj <- readRDS(path_dgelist_obj)
+save_excel = TRUE
 
 s33d = 1991
+# read object ---
+dgelist_obj <- readRDS(path_dgelist_obj)
+# reorder factors
+dgelist_obj$samples$Stage    <- factor(dgelist_obj$samples$Stage, levels = c("ESC","EpiLC","ME24h","ME48h"))
+dgelist_obj$samples$Genotype <- factor(dgelist_obj$samples$Genotype, levels = c("WT","3BKO"))
+
 # 1. Differential expression analysis ----
 if(!is.null(de_contrast) && grepl("~0+",de_formula)) {
   # test defined contrasts (parametrization: ~ 0 + group ...) ---
@@ -79,14 +78,24 @@ if(!is.null(de_contrast) && grepl("~0+",de_formula)) {
 
 # Get differentially expressed genes ---
 de <- lapply(de, function(x) {
-  x$sig <- tryCatch(RNAseqRtools::getDEgenes(x
-                                             , fdrTh = fdrTh
-                                             , fcTh = fcTh)
-                    , error = function(e) {message(e);return(NA)})
+  x$sig <- RNAseqRtools::getDEgenes(x
+                                    , fdrTh = fdrTh
+                                    , fcTh = fcTh)
   return(x)
 })
 
 # Save results ---
+for(i in names(de)) {
+  outfile <- paste0(path_results,"/dge-edger.",de_method,".",i,".fcTh_",fcTh,".fdrTh_",fdrTh,".txt.gz")
+  message(" -- writing to: ", outfile)
+  write.table(de[[i]]$sig
+              , file = gzfile(outfile)
+              , row.names = F
+              , col.names = T
+              , sep = "\t"
+              , quote = F)
+}
+
 if(save_table) {
   for(i in names(de)) {
     outfile <- paste0(path_results,"/dge-edger.",de_method,".",i,".table.txt.gz")
@@ -98,21 +107,6 @@ if(save_table) {
                 , sep = "\t"
                 , quote = F)
   }
-}
-
-na_idx <- lapply(de, function(x) !is.data.frame(x$sig) && is.na(x$sig))
-na_idx <- which(unlist(na_idx))
-if(length(na_idx)!=0) de <- de[-na_idx] # filter non significant results
-
-for(i in names(de)) {
-  outfile <- paste0(path_results,"/dge-edger.",de_method,".",i,".fcTh_",fcTh,".fdrTh_",fdrTh,".txt.gz")
-  message(" -- writing to: ", outfile)
-  write.table(de[[i]]$sig
-              , file = gzfile(outfile)
-              , row.names = F
-              , col.names = T
-              , sep = "\t"
-              , quote = F)
 }
 
 if(save_excel) {

@@ -27,7 +27,10 @@ results/dge-edger/done: src/rnaseqrtools-dge-edger.r data/dgelist_obj.rds
 	Rscript --vanilla $<
 	date > $@
 
-results/dge-edger_anovalike/done: src/rnaseqrtools-dge-edger_anovalike.r data/dgelist_obj.rds
+results/expr_dynamics.lines.trend.pdf: src/analyze-dge-dynamics.r data/dgelist_obj.rds results/dge-edger/done
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	Rscript --vanilla $<
-	date > $@
+
+results/rescue_overlaps_full.pdf: src/calc-rescued-genes.r results/dge-edger/done
+	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
+	Rscript --vanilla $<

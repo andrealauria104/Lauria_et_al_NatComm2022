@@ -29,18 +29,17 @@ if(!dir.exists(path_results)) dir.create(path_results, recursive = T)
 de_method = "qlf" # qlf, lrt, exact
 de_robust.dispersion = TRUE
 de_return.y = FALSE
-de_formula = "~0+StageGenotype"
+de_formula = "~0+StageOverexpression"
 de_cf = NULL
-de_contrast  = list("ESC_3BKO_vs_WT"=c("StageGenotype","ESC_3BKO","ESC_WT")
-                    ,"EpiLC_3BKO_vs_WT"=c("StageGenotype","EpiLC_3BKO","EpiLC_WT")
-                    ,"ME24h_3BKO_vs_WT"=c("StageGenotype","ME24h_3BKO","ME24h_WT")
-                    ,"ME48h_3BKO_vs_WT"=c("StageGenotype","ME48h_3BKO","ME48h_WT"))
+de_contrast  = list("EpiLC_3B_vs_none"=c("StageOverexpression","EpiLC_3B","EpiLC_none")
+                    ,"ME24h_3B_vs_none"=c("StageOverexpression","ME24h_3B","ME24h_none")
+                    ,"ME48h_3B_vs_none"=c("StageOverexpression","ME48h_3B","ME48h_none"))
 
 de_anovalike = FALSE
 de_analysis  = "timecourse_contrasts" # dge
 
 fdrTh  = 0.05
-fcTh   = 1
+fcTh   = .5
 save_table = TRUE
 save_excel = FALSE
 
