@@ -4,12 +4,9 @@
 # Contrasts from metadata, space separated
 CONTRAST=StageGenotype_EpiSC-WT_ESC-WT StageGenotype_MESO24h-WT_ESC-WT StageGenotype_MESO48h-WT_ESC-WT
 CONTRAST+=StageGenotype_MESO24h-WT_EpiSC-WT StageGenotype_MESO48h-WT_EpiSC-WT StageGenotype_MESO48h-WT_MESO24h-WT
-CONTRAST+=StageGenotype_EpiSC-3BKO_ESC-3BKO StageGenotype_MESO24h-3BKO_ESC-3BKO StageGenotype_MESO48h-3BKO_ESC-3BKO
-CONTRAST+=StageGenotype_MESO24h-3BKO_EpiSC-3BKO StageGenotype_MESO48h-3BKO_EpiSC-3BKO StageGenotype_MESO48h-3BKO_MESO24h-3BKO
 CONTRAST+=StageGenotype_ESC-3BKO_ESC-WT StageGenotype_EpiSC-3BKO_EpiSC-WT StageGenotype_MESO24h-3BKO_MESO24h-WT StageGenotype_MESO48h-3BKO_MESO48h-WT 
 # Contrasts in DMR filenames, space separated
 CONTRAST_NAME=EpiSCvsESC_WT MESO24hvsESC_WT MESO48hvsESC_WT MESO24hvsEpiSC_WT MESO48hvsEpiSC_WT MESO48hvsMESO24h_WT
-CONTRAST_NAME+=EpiSCvsESC_3BKO MESO24hvsESC_3BKO MESO48hvsESC_3BKO MESO24hvsEpiSC_3BKO MESO48hvsEpiSC_3BKO MESO48hvsMESO24h_3BKO
 CONTRAST_NAME+=3BKOvsWT_ESC 3BKOvsWT_EpiSC 3BKOvsWT_MESO24h 3BKOvsWT_MESO48h
 
 GENOME=mm10
@@ -175,8 +172,34 @@ dss%txt.gz: dss%txt
 dssDMR_%.dmr_info.txt.gz: dssDMR_%.bed dssDMR_%.ccREs_map.gz dssDMR_%_rGREAT/region_gene_map_default.gz dssDMR_%.hyper.names dssDMR_%.hypo.names
 	bin/collect-dmr-info.r dssDMR_$* 
 
-# ---- #
+# ------------- #
+# ------------- #
+# ------------- #
+#
+# Downstream processing of DMRs
+#
+# --- #
+# DMR # ------
+# --- #
+DMR/dssDMR_time-course_%.bed: DMR/dssDMR_EpiSCvsESC_%_delta_0.2_p_0.05.50_5_100_0.5.bed \
+			      DMR/dssDMR_MESO48hvsEpiSC_%_delta_0.2_p_0.05.50_5_100_0.5.bed \
+			      DMR/dssDMR_MESO24hvsEpiSC_%_delta_0.2_p_0.05.50_5_100_0.5.bed \
+			      DMR/dssDMR_MESO48hvsESC_%_delta_0.2_p_0.05.50_5_100_0.5.bed \
+			      DMR/dssDMR_MESO24hvsESC_%_delta_0.2_p_0.05.50_5_100_0.5.bed \
+			      DMR/dssDMR_MESO48hvsMESO24h_%_delta_0.2_p_0.05.50_5_100_0.5.bed
+	mergeBed -i <(cat $^ | sort -k1,1 -k2,2n -V) > $@
+
+DMR/dssDMR_time-course_3BKOvsWT.bed: DMR/dssDMR_3BKOvsWT_EpiSC_delta_0.2_p_0.05.50_5_100_0.5.bed \
+				     DMR/dssDMR_3BKOvsWT_MESO24h_delta_0.2_p_0.05.50_5_100_0.5.bed \
+				     DMR/dssDMR_3BKOvsWT_ESC_delta_0.2_p_0.05.50_5_100_0.5.bed \
+				     DMR/dssDMR_3BKOvsWT_MESO48h_delta_0.2_p_0.05.50_5_100_0.5.bed
+	mergeBed -i <(cat $^ | sort -k1,1 -k2,2n -V) > $@
+
+DMR/dssDMR_WT-time-course_3BKOvsWT.bed: DMR/dssDMR_time-course_3BKOvsWT.bed DMR/dssDMR_time-course_WT.bed
+	intersectBed -a $< -b $(word 2, $^) -wa -u > $@
+DMR/dssDMR_nonWT-time-course_3BKOvsWT.bed: DMR/dssDMR_time-course_3BKOvsWT.bed DMR/dssDMR_time-course_WT.bed
+	intersectBed -a $< -b $(word 2, $^) -wa -v > $@
+
 DMR/dssDMR_WT-time-course_3BKOvsWT.mregion.ratio.heatmap.col_idx.pdf: src/get-dmr-heatmap_WT-time-course_3BKO-vs-WT.r
 	conda activate rstudio_Rv4.0.3; export LD_LIBRARY_PATH=/sto1/ref/miniconda2/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	Rscript --vanilla $<
-

@@ -18,6 +18,9 @@ results/r.mfa.rds: src/mfa-methyl-expr.r
 results/mfa.pdf: results/r.mfa.rds
 	@echo done
 
+results/dmr_dge_common.denovo_3b_dmr.txt.gz: src/analyze-methyl-expr-denovo3bdmr.r
+	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
+	Rscript --vanilla $<
 results/methyl_expr_dynamics.heatmap.pdf: src/plot-methyl-expr-heatmap.r
 	$(CONDA_ACTIVATE) rstudio_Rv4.0.3; export LD_LIBRARY_PATH=$(ENV_PREFIX)/envs/rstudio_Rv4.0.3/jre/lib/amd64/server;\
 	Rscript --vanilla $<
