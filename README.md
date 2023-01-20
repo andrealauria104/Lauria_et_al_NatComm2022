@@ -73,8 +73,10 @@ Raw and processed sequencing data are available from the Gene Expression Omnibus
 - featureCounts v1.6.4: https://subread.sourceforge.net/ 
 - Bismark v0.22.3: https://www.bioinformatics.babraham.ac.uk/projects/bismark/
 - Bowtie2 v2.3.5: https://bowtie-bio.sourceforge.net/bowtie2/index.shtml
+- bedtools v2.29.2: https://bedtools.readthedocs.io/en/latest/
+- deepTools v3.3.1: https://deeptools.readthedocs.io/en/develop/
 - MACS2 v2.2.5: https://pypi.org/project/MACS2/ 
-- R v3.6.1, v4.0.3: https://www.r-project.org/
+- R v3.5.3, v3.6.1, v4.0.3: https://www.r-project.org/
 - Seurat v4.0.0: https://satijalab.org/seurat/index.html
 - Monocle3 v1.0.0: https://cole-trapnell-lab.github.io/monocle3/
 - edgeR v3.32.1: https://bioconductor.org/packages/release/bioc/html/edgeR.html
