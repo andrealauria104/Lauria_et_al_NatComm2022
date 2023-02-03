@@ -4,7 +4,7 @@ Code repository for the paper:
 
 <cite>Andrea Lauria*, Guohua Meng*, Valentina Proserpio*, Stefania Rapelli*, Mara Maldotti,
 Isabelle Laurence Polignano, Francesca Anselmi, Chiara Levra Levron, Giacomo Donati,
-Danny Incarnato, Anna Krepelova, Francesco Neri, Ivan Molineris, Salvatore Oliviero, "DNMT3B supports meso-endoderm differentiation from mouse embryonic stem cells."</cite>
+Danny Incarnato, Anna Krepelova, Francesco Neri, Ivan Molineris, Salvatore Oliviero, "DNMT3B supports meso-endoderm differentiation from mouse embryonic stem cells." Nat Commun 14, 367 (2023). https://doi.org/10.1038/s41467-023-35938-x </cite>
 
 ## Repository structure
 

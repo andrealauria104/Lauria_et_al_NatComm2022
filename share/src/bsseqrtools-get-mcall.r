@@ -68,8 +68,11 @@ if(length(fl)==0) {
   quit(save = "no", status = 0, runLast = TRUE)
 }
 # 2. Read and process methylation data ----
-metadata <- read.delim(as.character(opts$metadata))
-ord_idx  <- metadata$sample.id[order(metadata$treatment)]
+metadata <- read.delim(as.character(opts$metadata), stringsAsFactors=F)
+message("-- metadata:")
+print(metadata)
+
+ord_idx  <- metadata$sample.id
 fl       <- fl[ord_idx]
 
 mcall <- BSseqRtools::read_mcall(mfiles = fl
